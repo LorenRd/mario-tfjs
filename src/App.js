@@ -1,25 +1,32 @@
-import logo from './logo.svg';
 import './App.css';
+import {React, Component} from "react";
+import * as tf from '@tensorflow/tfjs';
+import '@tensorflow/tfjs-backend-webgl';
+import * as mobilenet from '@tensorflow-models/mobilenet';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component{
+  async componentDidMount() {
+    const img = document.getElementById('img');
+
+    // Load the model.
+    const model = await mobilenet.load();
+    
+    // Classify the image.
+    const predictions = await model.classify(img);
+    
+    console.log('Predictions: ');
+    console.log(predictions);
+  }
+
+  render(){
+    return(
+      <img id="img" alt="demo" src="mushroom.jpg" />
+
+    )
+  }
+
+
 }
+
 
 export default App;
