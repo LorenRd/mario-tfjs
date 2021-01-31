@@ -1,32 +1,38 @@
 import './App.css';
-import {React, Component} from "react";
+import { React, Component } from "react";
 import * as tf from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-backend-webgl';
 import * as mobilenet from '@tensorflow-models/mobilenet';
+import CamRecorder from "./components/CamRecorder";
 
-class App extends Component{
-  async componentDidMount() {
-    const img = document.getElementById('img');
+class App extends Component {
 
-    // Load the model.
-    const model = await mobilenet.load();
-    
-    // Classify the image.
-    const predictions = await model.classify(img);
-    
-    console.log('Predictions: ');
-    console.log(predictions);
-  }
+    constructor(props) {
+        super(props);
+        this.state = {
+            model: null
+        }
+    }
 
-  render(){
-    return(
-      <img id="img" alt="demo" src="mushroom.jpg" />
+    componentDidMount() {
 
-    )
-  }
+        // Load the model
+        mobilenet.load()
+            .then(model => {
+                this.setState({ model });
+            })
+            .catch(reason => {
+                console.log(reason);
+            })
+    }
 
-
+    render() {
+        return (
+            <>
+                {this.state.model ? <CamRecorder model={this.state.model} /> : null}
+            </>
+        );
+    }
 }
-
 
 export default App;
