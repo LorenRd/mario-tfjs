@@ -5,7 +5,7 @@ import '@tensorflow/tfjs-backend-webgl';
 import * as mobilenet from '@tensorflow-models/mobilenet';
 import * as knnClassifier from "@tensorflow-models/knn-classifier";
 import CamRecorder from "./components/CamRecorder";
-import CamDetector from "./components/CamDetector";
+import Game from "./components/Game";
 import { ContextProvider } from "./appContext";
 import { Typography } from "@material-ui/core";
 
@@ -42,7 +42,9 @@ class App extends Component {
         return (
             <ContextProvider value={this.state}>
                 {this.state.model ? 
-                    this.state.playing ? <CamDetector model={model} classifier={classifier}/> : <CamRecorder />
+                    this.state.playing ? 
+                        <Game model={model} classifier={classifier}/>
+                     : <CamRecorder />
                     :
                     <Typography variant="h3">Cargando modelo...</Typography>}
             </ContextProvider>
