@@ -13,6 +13,7 @@ class App extends Component {
 
     constructor(props) {
         super(props);
+        console.log(tf.version.tfjs)
         this.state = {
             model: null,
             classifier: knnClassifier.create(),
