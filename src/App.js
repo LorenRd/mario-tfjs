@@ -3,20 +3,29 @@ import { React, Component } from "react";
 import * as tf from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-backend-webgl';
 import * as mobilenet from '@tensorflow-models/mobilenet';
+import * as knnClassifier from "@tensorflow-models/knn-classifier";
 import CamRecorder from "./components/CamRecorder";
+import CamDetector from "./components/CamDetector";
+import { ContextProvider } from "./appContext";
+import { Typography } from "@material-ui/core";
 
 class App extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            model: null
+            model: null,
+            classifier: knnClassifier.create(),
+            playing: false,
+            setPlaying: this.setPlaying.bind(this)
         }
     }
 
-    componentDidMount() {
+    setPlaying() {
+        this.setState({ playing: true });
+    }
 
-        // Load the model
+    componentDidMount() {
         mobilenet.load()
             .then(model => {
                 this.setState({ model });
@@ -27,10 +36,15 @@ class App extends Component {
     }
 
     render() {
+        const { model, classifier } = this.state;
+
         return (
-            <>
-                {this.state.model ? <CamRecorder model={this.state.model} /> : null}
-            </>
+            <ContextProvider value={this.state}>
+                {this.state.model ? 
+                    this.state.playing ? <CamDetector model={model} classifier={classifier}/> : <CamRecorder />
+                    :
+                    <Typography variant="h3">Cargando modelo...</Typography>}
+            </ContextProvider>
         );
     }
 }
