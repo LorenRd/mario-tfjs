@@ -4,7 +4,7 @@ import { Typography } from "@material-ui/core";
 import * as tf from "@tensorflow/tfjs";
 
 const videoConstraints = {
-    width: 640,
+    width: 480,
     height: 480,
     facingMode: "user"
 };
@@ -21,9 +21,7 @@ class CamDetector extends Component {
     }
 
     componentDidMount() {
-        setInterval(() => {
-            this.detect();
-        }, 16.7);
+        requestAnimationFrame(() => this.detect());
     }
 
     async detect() {
@@ -32,7 +30,10 @@ class CamDetector extends Component {
 
         if (typeof webcamRef.current === "undefined" ||
             webcamRef.current === null ||
-            webcamRef.current.video.readyState !== 4) return;
+            webcamRef.current.video.readyState !== 4) {
+                requestAnimationFrame(() => this.detect());
+                return;
+            }
 
         const img = tf.browser.fromPixels(webcamRef.current.video);
 
@@ -42,9 +43,11 @@ class CamDetector extends Component {
         this.setState({
             prediction: result.label,
             predictionProb: result.confidences[result.label] * 100
-        })
+        });
 
         tf.dispose(img);
+
+        requestAnimationFrame(() => this.detect());
     }
 
     render() {

@@ -5,7 +5,7 @@ import * as tf from "@tensorflow/tfjs";
 import { ContextConsumer } from "../appContext";
 
 const videoConstraints = {
-    width: 640,
+    width: 480,
     height: 480,
     facingMode: "user"
 };
