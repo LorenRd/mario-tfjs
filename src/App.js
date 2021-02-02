@@ -2,53 +2,50 @@ import { React, Component } from "react";
 import * as tf from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-backend-webgl';
 import * as mobilenet from '@tensorflow-models/mobilenet';
-import * as knnClassifier from "@tensorflow-models/knn-classifier";
 import CamRecorder from "./components/CamRecorder";
 import Game from "./components/Game";
-import { ContextProvider } from "./appContext";
 import { Typography } from "@material-ui/core";
+import { connect } from "react-redux";
+import setModel from "./redux/actions/setModel";
 
 class App extends Component {
-
-    constructor(props) {
-        super(props);
-        console.log(tf.version.tfjs)
-        this.state = {
-            model: null,
-            classifier: knnClassifier.create(),
-            playing: false,
-            setPlaying: this.setPlaying.bind(this)
-        }
-    }
-
-    setPlaying() {
-        this.setState({ playing: true });
-    }
 
     componentDidMount() {
         mobilenet.load()
             .then(model => {
-                this.setState({ model });
+                this.props.setModel(model);
             })
             .catch(reason => {
+                // TODO Cambiar por alerta
                 console.log(reason);
-            })
+            });
     }
 
     render() {
-        const { model, classifier } = this.state;
+        const { model, playing } = this.props;
 
         return (
-            <ContextProvider value={this.state}>
-                {this.state.model ? 
-                    this.state.playing ? 
-                        <Game model={model} classifier={classifier}/>
-                     : <CamRecorder />
+            <>
+                {model ?
+                    playing ? <Game/> : <CamRecorder />
                     :
-                    <Typography variant="h3">Cargando modelo...</Typography>}
-            </ContextProvider>
+                    <Typography variant="h3">Cargando modelo...</Typography>
+                }
+                <Typography variant="h4">TFJS version: {tf.version.tfjs}</Typography>
+            </>
         );
     }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+    return {
+        playing: state.DataReducer.playing,
+        model: state.DataReducer.model,
+    };
+};
+
+const mapDispatchToProps = {
+    setModel,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

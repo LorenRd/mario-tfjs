@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import Webcam from "react-webcam";
 import { Typography } from "@material-ui/core";
 import * as tf from "@tensorflow/tfjs";
+import { connect } from "react-redux";
+import setPrediction from "../redux/actions/setPrediction";
 
 const videoConstraints = {
     width: 480,
@@ -14,9 +16,7 @@ class CamDetector extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            webcamRef: React.createRef(),
-            prediction: "None",
-            predictionProb: 0,
+            webcamRef: React.createRef()
         };
     }
 
@@ -26,7 +26,7 @@ class CamDetector extends Component {
 
     async detect() {
         const { webcamRef } = this.state;
-        const { model, classifier } = this.props;
+        const { model, classifier, setPrediction } = this.props;
 
         if (typeof webcamRef.current === "undefined" ||
             webcamRef.current === null ||
@@ -40,10 +40,7 @@ class CamDetector extends Component {
         const activation = model.infer(img, 'conv_preds');
         const result = await classifier.predictClass(activation);
 
-        this.setState({
-            prediction: result.label,
-            predictionProb: result.confidences[result.label] * 100
-        });
+        setPrediction(result.label, result.confidences[result.label] * 100);
 
         tf.dispose(img);
 
@@ -51,7 +48,8 @@ class CamDetector extends Component {
     }
 
     render() {
-        const { webcamRef, prediction, predictionProb } = this.state;
+        const { webcamRef } = this.state;
+        const { prediction, predictionProb } = this.props;
 
         return (
             <>
@@ -69,4 +67,17 @@ class CamDetector extends Component {
     }
 }
 
-export default CamDetector;
+const mapStateToProps = (state) => {
+    return {
+        model: state.DataReducer.model,
+        classifier: state.DataReducer.classifier,
+        prediction: state.DataReducer.prediction,
+        predictionProb: state.DataReducer.predictionProb
+    };
+};
+
+const mapDispatchToProps = {
+    setPrediction
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CamDetector);
