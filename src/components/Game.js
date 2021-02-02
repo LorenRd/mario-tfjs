@@ -15,96 +15,100 @@ import Mario from '../entities/mario';
 import Goomba from '../entities/goomba';
 import Koopa from '../entities/koopa';
 import Score from '../entities/score';
+import { connect } from "react-redux";
+import setNewGame from "../redux/actions/setNewGame";
 
 const CANVAS_WIDTH = 760;
 const CANVAS_HEIGHT = 600;
 
 class Game extends Component {
 
-    reset() {
-        // TODO Recargar el juego
+    constructor(props){
+        super(props);
+        this.props.setNewGame();
     }
-
-    componentDidMount() {
-
-        const canvasEl = document.getElementById('game-canvas');
-        const ctx = canvasEl.getContext('2d');
-        ctx.scale(3, 3);
-
-        const canvas = {
-            canvas: canvasEl,
-            ctx,
-        };
-
-        const viewport = {
-            width: CANVAS_WIDTH,
-            height: CANVAS_HEIGHT,
-            vX: 0,
-            vY: 0,
-        };
-
-        const backgroundMusic = document.getElementById('background_music');
-
-        const spriteSheet = new Image();
-        spriteSheet.src = './sprites/spritesheet.png';
-
-        const tileset = new Image();
-        tileset.src = './sprites/tileset_gutter.png';
-
-        spriteSheet.addEventListener('load', () => {
-
-            const data = {
-                spriteSheet,
-                canvas,
-                viewport,
-                animationFrame: 0,
-                mapBuilder: new MapBuilder(levelOne, tileset, spriteSheet),
-                entities: {},
-                sounds: {
-                    backgroundMusic,
-                    breakSound: new Audio('./audio/sounds/break_block.wav'),
-                    levelFinish: new Audio('./audio/music/level_complete.mp3'),
-                },
-                userControl: true,
-                reset: this.reset,
-            };
-
-            data.entities.mario = new Mario(spriteSheet, 175, 0, 16, 16);
-            data.entities.score = new Score(270, 15);
-            data.entities.coins = [];
-            data.entities.mushrooms = [];
-            data.entities.goombas = [];
-            data.entities.koopas = [];
-
-            // Carga los enemigos
-            levelOne.koopas.forEach((koopa) => {
-                data.entities.koopas.push(
-                    new Koopa(spriteSheet, koopa[0], koopa[1], koopa[2], koopa[3]));
-            });
-
-            levelOne.goombas.forEach((goomba) => {
-                data.entities.goombas.push(
-                    new Goomba(spriteSheet, goomba[0], goomba[1], goomba[2], goomba[3]));
-            });
-
-            render.init(data);
-            
-            // Inicia el juego
-            const loop = () => {
-                input.update(data);
-                animation.update(data);
-                movement.update(data);
-                physics.update(data);
     
-                render.updateView(data);
-                render.update(data, CANVAS_WIDTH, CANVAS_HEIGHT);
+    componentDidUpdate(prevProps) {
+        if(this.props.alive !== prevProps.alive){
+            const canvasEl = document.getElementById('game-canvas');
+            const ctx = canvasEl.getContext('2d');
+            ctx.scale(3, 3);
     
-                data.animationFrame += 1;
-                requestAnimationFrame(loop);
+            const canvas = {
+                canvas: canvasEl,
+                ctx,
             };
     
-            loop();
-        });
+            const viewport = {
+                width: CANVAS_WIDTH,
+                height: CANVAS_HEIGHT,
+                vX: 0,
+                vY: 0,
+            };
+    
+            const backgroundMusic = document.getElementById('background_music');
+    
+            const spriteSheet = new Image();
+            spriteSheet.src = './sprites/spritesheet.png';
+    
+            const tileset = new Image();
+            tileset.src = './sprites/tileset_gutter.png';
+    
+            spriteSheet.addEventListener('load', () => {
+    
+                const data = {
+                    spriteSheet,
+                    canvas,
+                    viewport,
+                    animationFrame: 0,
+                    mapBuilder: new MapBuilder(levelOne, tileset, spriteSheet),
+                    entities: {},
+                    sounds: {
+                        backgroundMusic,
+                        breakSound: new Audio('./audio/sounds/break_block.wav'),
+                        levelFinish: new Audio('./audio/music/level_complete.mp3'),
+                    },
+                    userControl: true,
+                    reset: () => this.props.setNewGame(),
+                };
+    
+                data.entities.mario = new Mario(spriteSheet, 175, 0, 16, 16);
+                data.entities.score = new Score(270, 15);
+                data.entities.coins = [];
+                data.entities.mushrooms = [];
+                data.entities.goombas = [];
+                data.entities.koopas = [];
+    
+                // Carga los enemigos
+                levelOne.koopas.forEach((koopa) => {
+                    data.entities.koopas.push(
+                        new Koopa(spriteSheet, koopa[0], koopa[1], koopa[2], koopa[3]));
+                });
+    
+                levelOne.goombas.forEach((goomba) => {
+                    data.entities.goombas.push(
+                        new Goomba(spriteSheet, goomba[0], goomba[1], goomba[2], goomba[3]));
+                });
+    
+                render.init(data);
+                
+                // Inicia el juego
+                const loop = () => {
+                    input.update(data);
+                    animation.update(data);
+                    movement.update(data);
+                    physics.update(data);
+        
+                    render.updateView(data);
+                    render.update(data, CANVAS_WIDTH, CANVAS_HEIGHT);
+        
+                    data.animationFrame += 1;
+                    requestAnimationFrame(loop);
+                };
+        
+                loop();
+            });
+        }
     }
     render() {
         const { model, classifier } = this.props;
@@ -120,4 +124,13 @@ class Game extends Component {
     }
 }
 
-export default Game;
+const mapDispatchToProps = {
+    setNewGame,
+};
+const mapStateToProps = (state) => {
+    return {
+        alive: state.DataReducer.alive,
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Game);

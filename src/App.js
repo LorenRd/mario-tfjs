@@ -29,9 +29,11 @@ class App extends Component {
                 {model ?
                     playing ? <Game/> : <CamRecorder />
                     :
-                    <Typography variant="h3">Cargando modelo...</Typography>
+                    <div>
+                        <Typography variant="h4">TFJS version: {tf.version.tfjs}</Typography>
+                        <Typography variant="h3">Cargando modelo...</Typography>
+                    </div>
                 }
-                <Typography variant="h4">TFJS version: {tf.version.tfjs}</Typography>
             </>
         );
     }
