@@ -1,3 +1,5 @@
+import { GRAVITY } from "./physics";
+
 const input = {
     down: {},
     pressed: {},
@@ -9,7 +11,7 @@ const input = {
 
             // Movimiento a la izquierda
             if (this.isDown(37) || this.isDown(65)) {
-                if (mario.velY === 1.2) {
+                if (mario.velY === GRAVITY) {
                     if (mario.bigMario) {
                         mario.currentState = mario.states.bigWalking;
                     } else {
@@ -22,7 +24,7 @@ const input = {
             }
             // Movimiento a la derecha
             if (this.isDown(39) || this.isDown(68)) {
-                if (mario.velY === 1.2) {
+                if (mario.velY === GRAVITY) {
                     if (mario.bigMario) {
                         mario.currentState = mario.states.bigWalking;
                     } else {

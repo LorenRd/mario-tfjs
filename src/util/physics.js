@@ -1,4 +1,4 @@
-const GRAVITY = 1.2;
+export const GRAVITY = 1.2;
 
 const physics = {
 
