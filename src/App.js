@@ -1,4 +1,3 @@
-import './App.css';
 import { React, Component } from "react";
 import * as tf from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-backend-webgl';
