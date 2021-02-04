@@ -3,11 +3,13 @@ import * as tf from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-backend-webgl';
 import * as mobilenet from '@tensorflow-models/mobilenet';
 import CamRecorder from "./components/CamRecorder";
-import Game from "./components/Game";
 import { Typography } from "@material-ui/core";
 import { connect } from "react-redux";
 import Background from "./components/Background";
 import setModel from "./redux/actions/setModel";
+import SnackbarListener from "./components/SnackbarListener";
+import showAlert from "./redux/actions/showAlert";
+import CamDetector from "./components/CamDetector";
 
 class App extends Component {
 
@@ -16,9 +18,8 @@ class App extends Component {
             .then(model => {
                 this.props.setModel(model);
             })
-            .catch(reason => {
-                // TODO Cambiar por alerta
-                console.log(reason);
+            .catch(() => {
+                this.props.showAlert("error", "Ha ocurrido un error cargando el modelo");
             });
     }
 
@@ -29,14 +30,15 @@ class App extends Component {
             <>
                 <Background>
                     {model ?
-                        playing ? <Game /> : <CamRecorder />
+                        playing ? <CamDetector /> : <CamRecorder />
                         :
                         <div>
-                            <Typography variant="h4">TFJS version: {tf.version.tfjs}</Typography>
                             <Typography variant="h3">Cargando modelo...</Typography>
                         </div>
                     }
+                    <Typography variant="h4">TFJS version: {tf.version.tfjs}</Typography>
                 </Background>
+                <SnackbarListener />
             </>
         );
     }
@@ -51,6 +53,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
     setModel,
+    showAlert
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

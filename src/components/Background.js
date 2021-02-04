@@ -1,4 +1,4 @@
-import "./Background.scss";
+import "./Background.css";
 
 const Background = (props) => {
     return (

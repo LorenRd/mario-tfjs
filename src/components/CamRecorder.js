@@ -1,15 +1,12 @@
 import React, { Component } from "react";
 import Webcam from "react-webcam";
-import { Button, Typography } from "@material-ui/core";
+import { Button, Typography, Grid } from "@material-ui/core";
 import * as tf from "@tensorflow/tfjs";
 import { connect } from "react-redux";
 import setPlaying from "../redux/actions/setPlaying";
-
-const videoConstraints = {
-    width: 480,
-    height: 480,
-    facingMode: "user"
-};
+import showAlert from "../redux/actions/showAlert";
+import videoConstraints from "../CamConstraints";
+import "./CamRecorder.css";
 
 const actions = [
     {
@@ -32,15 +29,15 @@ class CamRecorder extends Component {
         super(props);
         this.state = {
             currentAction: 0,
-            webcamRef: React.createRef(),
             numPhotos: new Array(actions.length).fill(0),
             isCamReady: false,
         };
+        this.webcamRef = React.createRef();
     }
 
     imageToTensor(img) {
         return new Promise((resolve, reject) => {
-            const im = new Image()
+            const im = new Image();
             im.crossOrigin = 'anonymous';
             im.src = img;
             im.onload = () => {
@@ -49,7 +46,7 @@ class CamRecorder extends Component {
             im.onerror = () => {
                 reject();
             }
-        })
+        });
     }
 
     camReady() {
@@ -58,22 +55,26 @@ class CamRecorder extends Component {
 
     async takePhoto() {
         const { model, classifier } = this.props;
-        const { webcamRef, currentAction } = this.state;
+        const { currentAction } = this.state;
 
-        const camImage = webcamRef.current.getScreenshot({ width: videoConstraints.width, height: videoConstraints.height });
+        const camImage = this.webcamRef.current.getScreenshot({ width: videoConstraints.width, height: videoConstraints.height });
 
-        const img = await this.imageToTensor(camImage);
+        this.imageToTensor(camImage)
+            .then(img => {
+                const activation = model.infer(img, true);
+                classifier.addExample(activation, actions[currentAction].class);
 
-        const activation = model.infer(img, true);
-        classifier.addExample(activation, actions[currentAction].class);
+                tf.dispose(img);
 
-        tf.dispose(img);
-
-        this.setState(prevState => {
-            const numPhotos = [...prevState.numPhotos];
-            numPhotos[prevState.currentAction] ++;
-            return { numPhotos };
-        });
+                this.setState(prevState => {
+                    const numPhotos = [...prevState.numPhotos];
+                    numPhotos[prevState.currentAction]++;
+                    return { numPhotos };
+                });
+            })
+            .catch(() => {
+                this.props.showAlert("error", "Ha ocurrido un error capturando la imagen");
+            });
     }
 
     prevAction() {
@@ -91,7 +92,7 @@ class CamRecorder extends Component {
     finish() {
         const hasPhotos = this.state.numPhotos.reduce((ac, v) => v === 0 ? false : ac, true);
         if (!hasPhotos) {
-            // TODO Mostrar alerta
+            this.props.showAlert("info", "Todavía faltan gestos por definir");
             return;
         }
 
@@ -99,34 +100,39 @@ class CamRecorder extends Component {
     }
 
     render() {
-        const { currentAction, numPhotos, webcamRef, isCamReady } = this.state;
+        const { currentAction, numPhotos, isCamReady } = this.state;
 
         return (
-            <>
-                <Webcam
-                    ref={webcamRef}
-                    audio={false}
-                    screenshotFormat="image/png"
-                    width={videoConstraints.width}
-                    height={videoConstraints.height}
-                    videoConstraints={videoConstraints}
-                    onUserMedia={() => this.camReady()}
-                />
-                {isCamReady ?
-                    <>
-                        <Typography variant="h3">Acción actual: {actions[currentAction].name}</Typography>
-                        <Typography variant="h3">Número de fotos: {numPhotos[currentAction]}</Typography>
-                        <Button variant="contained" onClick={() => this.takePhoto()}>Tomar foto</Button>
-                        <Button variant="contained" disabled={currentAction === 0} onClick={() => this.prevAction()}>Acción anterior</Button>
-                        <Button variant="contained" disabled={currentAction >= actions.length - 1} onClick={() => this.nextAction()}>Siguiente acción</Button>
-                        <Button variant="contained" onClick={() => this.finish()}>Finalizar</Button>
-                    </>
-                    :
-                    <>
-                        <Typography variant="h3">Cámara aún no lista...</Typography>
-                    </>
-                }
-            </>
+            <Grid container>
+                <Grid item xs={4} />
+                <Grid container item xs={4} direction="column" alignItems="center" justify="center">
+                    <Grid item xs={12}>
+                    <Webcam
+                        className="camrecorder"
+                        ref={this.webcamRef}
+                        audio={false}
+                        screenshotFormat="image/png"
+                        videoConstraints={videoConstraints}
+                        onUserMedia={() => this.camReady()}
+                    />
+                    </Grid>
+                    {isCamReady ?
+                        <>
+                            <Typography variant="h3">Acción actual: {actions[currentAction].name}</Typography>
+                            <Typography variant="h3">Número de fotos: {numPhotos[currentAction]}</Typography>
+                            <Button variant="contained" onClick={() => this.takePhoto()}>Tomar foto</Button>
+                            <Button variant="contained" disabled={currentAction === 0} onClick={() => this.prevAction()}>Acción anterior</Button>
+                            <Button variant="contained" disabled={currentAction >= actions.length - 1} onClick={() => this.nextAction()}>Siguiente acción</Button>
+                            <Button variant="contained" onClick={() => this.finish()}>Finalizar</Button>
+                        </>
+                        :
+                        <>
+                            <Typography variant="h3">Cámara aún no lista...</Typography>
+                        </>
+                    }
+                </Grid>
+                <Grid item xs={4} />
+            </Grid>
         );
     }
 }
@@ -140,6 +146,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
     setPlaying,
+    showAlert
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CamRecorder);

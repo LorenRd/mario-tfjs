@@ -4,20 +4,17 @@ import { Typography } from "@material-ui/core";
 import * as tf from "@tensorflow/tfjs";
 import { connect } from "react-redux";
 import setPrediction from "../redux/actions/setPrediction";
-
-const videoConstraints = {
-    width: 480,
-    height: 480,
-    facingMode: "user"
-};
+import Game from "./Game";
+import videoConstraints from "../CamConstraints";
 
 class CamDetector extends Component {
 
     constructor(props) {
         super(props);
+        this.webcamRef = React.createRef();
         this.state = {
-            webcamRef: React.createRef()
-        };
+            isCamReady: false
+        }
     }
 
     componentDidMount() {
@@ -25,17 +22,16 @@ class CamDetector extends Component {
     }
 
     async detect() {
-        const { webcamRef } = this.state;
         const { model, classifier, setPrediction } = this.props;
 
-        if (typeof webcamRef.current === "undefined" ||
-            webcamRef.current === null ||
-            webcamRef.current.video.readyState !== 4) {
-                requestAnimationFrame(() => this.detect());
-                return;
-            }
+        if (typeof this.webcamRef.current === "undefined" ||
+            this.webcamRef.current === null ||
+            this.webcamRef.current.video.readyState !== 4) {
+            requestAnimationFrame(() => this.detect());
+            return;
+        }
 
-        const img = tf.browser.fromPixels(webcamRef.current.video);
+        const img = tf.browser.fromPixels(this.webcamRef.current.video);
 
         const activation = model.infer(img, 'conv_preds');
         const result = await classifier.predictClass(activation);
@@ -47,21 +43,33 @@ class CamDetector extends Component {
         requestAnimationFrame(() => this.detect());
     }
 
+    camReady() {
+        this.setState({ isCamReady: true });
+    }
+
     render() {
-        const { webcamRef } = this.state;
         const { prediction, predictionProb } = this.props;
+        const { isCamReady } = this.state;
 
         return (
             <>
                 <Webcam
-                    ref={webcamRef}
+                    ref={this.webcamRef}
                     audio={false}
                     screenshotFormat="image/png"
-                    width={videoConstraints.width}
-                    height={videoConstraints.height}
                     videoConstraints={videoConstraints}
+                    onUserMedia={() => this.camReady()}
                 />
-                <Typography variant="h3">Predicción: {prediction} [{predictionProb} %]</Typography>
+                {isCamReady ?
+                    <>
+                        <Typography variant="h3">Predicción: {prediction} [{predictionProb} %]</Typography>
+                        <Game />
+                    </>
+                    :
+                    <>
+                        <Typography variant="h3">Cámara aún no lista</Typography>
+                    </>
+                }
             </>
         );
     }
