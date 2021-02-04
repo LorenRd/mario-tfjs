@@ -82,7 +82,7 @@ export default class Mario extends Entity {
                     if (self.velY === 1.2) {
                         const jumpSound = self.jumpSound.cloneNode();
                         jumpSound.play();
-                        self.velY -= 14;
+                        self.velY -= self.jumpSpeed;
                     }
                 },
                 animation(data) {
@@ -98,7 +98,7 @@ export default class Mario extends Entity {
                 movement(data) {
                     if (self.velY === 1.2) {
                         self.jumpSound.play();
-                        self.velY -= 14;
+                        self.velY -= self.jumpSpeed;
                     }
                 },
                 animation(data) {
@@ -251,10 +251,11 @@ export default class Mario extends Entity {
         this.direction = 'right';
         this.bigMario = false;
         this.velY = 0;
-        this.velX = 3.8;
+        this.velX = 1.0;
         this.xPos = xPos;
         this.yPos = yPos;
         this.width = width;
         this.height = height;
+        this.jumpSpeed = 14;
     }
 }

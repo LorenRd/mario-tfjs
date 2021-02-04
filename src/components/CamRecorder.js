@@ -23,6 +23,10 @@ const actions = [
     {
         name: "Salto",
         class: "jump"
+    },
+    {
+        name: "Quieto",
+        class: "stop"
     }
 ];
 
