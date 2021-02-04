@@ -6,6 +6,7 @@ import CamRecorder from "./components/CamRecorder";
 import Game from "./components/Game";
 import { Typography } from "@material-ui/core";
 import { connect } from "react-redux";
+import Background from "./components/Background";
 import setModel from "./redux/actions/setModel";
 
 class App extends Component {
@@ -26,14 +27,16 @@ class App extends Component {
 
         return (
             <>
-                {model ?
-                    playing ? <Game/> : <CamRecorder />
-                    :
-                    <div>
-                        <Typography variant="h4">TFJS version: {tf.version.tfjs}</Typography>
-                        <Typography variant="h3">Cargando modelo...</Typography>
-                    </div>
-                }
+                <Background>
+                    {model ?
+                        playing ? <Game /> : <CamRecorder />
+                        :
+                        <div>
+                            <Typography variant="h4">TFJS version: {tf.version.tfjs}</Typography>
+                            <Typography variant="h3">Cargando modelo...</Typography>
+                        </div>
+                    }
+                </Background>
             </>
         );
     }

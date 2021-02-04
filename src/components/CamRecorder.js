@@ -33,7 +33,8 @@ class CamRecorder extends Component {
         this.state = {
             currentAction: 0,
             webcamRef: React.createRef(),
-            numPhotos: new Array(actions.length).fill(0)
+            numPhotos: new Array(actions.length).fill(0),
+            isCamReady: false,
         };
     }
 
@@ -51,6 +52,10 @@ class CamRecorder extends Component {
         })
     }
 
+    camReady() {
+        this.setState({ isCamReady: true });
+    }
+
     async takePhoto() {
         const { model, classifier } = this.props;
         const { webcamRef, currentAction } = this.state;
@@ -66,7 +71,7 @@ class CamRecorder extends Component {
 
         this.setState(prevState => {
             const numPhotos = [...prevState.numPhotos];
-            numPhotos[prevState.currentAction]++;
+            numPhotos[prevState.currentAction] ++;
             return { numPhotos };
         });
     }
@@ -94,7 +99,7 @@ class CamRecorder extends Component {
     }
 
     render() {
-        const { currentAction, numPhotos, webcamRef } = this.state;
+        const { currentAction, numPhotos, webcamRef, isCamReady } = this.state;
 
         return (
             <>
@@ -105,13 +110,22 @@ class CamRecorder extends Component {
                     width={videoConstraints.width}
                     height={videoConstraints.height}
                     videoConstraints={videoConstraints}
+                    onUserMedia={() => this.camReady()}
                 />
-                <Typography variant="h3">Acción actual: {actions[currentAction].name}</Typography>
-                <Typography variant="h3">Número de fotos: {numPhotos[currentAction]}</Typography>
-                <Button variant="contained" onClick={() => this.takePhoto()}>Tomar foto</Button>
-                <Button variant="contained" disabled={currentAction === 0} onClick={() => this.prevAction()}>Acción anterior</Button>
-                <Button variant="contained" disabled={currentAction >= actions.length - 1} onClick={() => this.nextAction()}>Siguiente acción</Button>
-                <Button variant="contained" onClick={() => this.finish()}>Finalizar</Button>
+                {isCamReady ?
+                    <>
+                        <Typography variant="h3">Acción actual: {actions[currentAction].name}</Typography>
+                        <Typography variant="h3">Número de fotos: {numPhotos[currentAction]}</Typography>
+                        <Button variant="contained" onClick={() => this.takePhoto()}>Tomar foto</Button>
+                        <Button variant="contained" disabled={currentAction === 0} onClick={() => this.prevAction()}>Acción anterior</Button>
+                        <Button variant="contained" disabled={currentAction >= actions.length - 1} onClick={() => this.nextAction()}>Siguiente acción</Button>
+                        <Button variant="contained" onClick={() => this.finish()}>Finalizar</Button>
+                    </>
+                    :
+                    <>
+                        <Typography variant="h3">Cámara aún no lista...</Typography>
+                    </>
+                }
             </>
         );
     }
