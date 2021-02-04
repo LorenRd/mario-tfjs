@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import CamDetector from "./CamDetector";
 
-/* Game imports */
 import render from '../util/render';
 import input from '../util/input';
 import animation from '../util/animation';
@@ -125,7 +123,6 @@ class Game extends Component {
     render() {
         return (
             <div>
-                <CamDetector />
                 <canvas id="game-canvas" width={CANVAS_WIDTH} height={CANVAS_HEIGHT}></canvas>
                 <audio id="background_music" loop>
                     <source src="./audio/music/mario_theme.mp3" type="audio/mp3" />
