@@ -1,12 +1,39 @@
 import React, { Component } from "react";
 import Webcam from "react-webcam";
-import { Button, Typography, Grid } from "@material-ui/core";
+import { Button, Typography, Grid, withStyles } from "@material-ui/core";
 import * as tf from "@tensorflow/tfjs";
 import { connect } from "react-redux";
 import setPlaying from "../redux/actions/setPlaying";
 import showAlert from "../redux/actions/showAlert";
 import videoConstraints from "../CamConstraints";
-import "./CamRecorder.css";
+import "./CamStyles.css";
+
+const styles = () => ({
+    box: {
+        fontSize: "2.4rem",
+        background: "linear-gradient(45deg, #b00 30%, #d00 90%)",
+        border: 0,
+        borderRadius: "10px",
+        boxShadow: "10px 3px 5px 2px rgba(0, 0, 0, .5)",
+        color: "white",
+        width: "5em",
+        height: "1em",
+        padding: "0.2em 0.6em",
+        margin: "0.1em",
+        textAlign: "center",
+        textTransform: "uppercase",
+        textShadow: "3px 3px rgba(0, 0, 0, .4)"
+    },
+    button: {
+        width: "9em",
+        margin: "0.4em",
+        backgroundColor: "#b00",
+        boxShadow: "10px 3px 5px 2px rgba(0, 0, 0, .5)",
+        '&:hover': {
+            backgroundColor: "#d00",
+        }
+    }
+});
 
 const actions = [
     {
@@ -101,38 +128,53 @@ class CamRecorder extends Component {
 
     render() {
         const { currentAction, numPhotos, isCamReady } = this.state;
+        const { classes } = this.props;
 
         return (
-            <Grid container>
-                <Grid item xs={4} />
-                <Grid container item xs={4} direction="column" alignItems="center" justify="center">
+            <>
+                <Grid container item xs={12} direction="column" alignItems="center" justify="center">
                     <Grid item xs={12}>
-                    <Webcam
-                        className="camrecorder"
-                        ref={this.webcamRef}
-                        audio={false}
-                        screenshotFormat="image/png"
-                        videoConstraints={videoConstraints}
-                        onUserMedia={() => this.camReady()}
-                    />
+                        <Webcam
+                            className="camrecorder camborder"
+                            ref={this.webcamRef}
+                            audio={false}
+                            screenshotFormat="image/png"
+                            videoConstraints={videoConstraints}
+                            onUserMedia={() => this.camReady()}
+                        />
                     </Grid>
-                    {isCamReady ?
+                </Grid>
+                <Grid container item>
+                    {isCamReady &&
                         <>
-                            <Typography variant="h3">Acción actual: {actions[currentAction].name}</Typography>
-                            <Typography variant="h3">Número de fotos: {numPhotos[currentAction]}</Typography>
-                            <Button variant="contained" onClick={() => this.takePhoto()}>Tomar foto</Button>
-                            <Button variant="contained" disabled={currentAction === 0} onClick={() => this.prevAction()}>Acción anterior</Button>
-                            <Button variant="contained" disabled={currentAction >= actions.length - 1} onClick={() => this.nextAction()}>Siguiente acción</Button>
-                            <Button variant="contained" onClick={() => this.finish()}>Finalizar</Button>
-                        </>
-                        :
-                        <>
-                            <Typography variant="h3">Cámara aún no lista...</Typography>
+                            <Grid container item alignItems="center" justify="center">
+                                <Grid item>
+                                    <Typography className={classes.box} variant="h3">{actions[currentAction].name}</Typography>
+                                </Grid>
+                                <Grid item>
+                                    <Typography className={classes.box} variant="h3">Fotos: {numPhotos[currentAction]}</Typography>
+                                </Grid>
+                            </Grid>
+                            <Grid container item alignItems="center" justify="center">
+                                <Grid item>
+                                    <Button variant="contained" className={classes.button} disabled={currentAction === 0} onClick={() => this.prevAction()}>Acción anterior</Button>
+                                </Grid>
+                                <Grid item>
+                                    <Button variant="contained" className={classes.button} disabled={currentAction >= actions.length - 1} onClick={() => this.nextAction()}>Siguiente acción</Button>
+                                </Grid>
+                            </Grid>
+                            <Grid container item alignItems="center" justify="center">
+                                <Grid item>
+                                    <Button variant="contained" className={classes.button} onClick={() => this.takePhoto()}>Tomar foto</Button>
+                                </Grid>
+                                <Grid item>
+                                    <Button variant="contained" className={classes.button} onClick={() => this.finish()}>Finalizar</Button>
+                                </Grid>
+                            </Grid>
                         </>
                     }
                 </Grid>
-                <Grid item xs={4} />
-            </Grid>
+            </>
         );
     }
 }
@@ -149,4 +191,4 @@ const mapDispatchToProps = {
     showAlert
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CamRecorder);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(CamRecorder));

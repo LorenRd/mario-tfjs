@@ -14,6 +14,8 @@ import Goomba from '../entities/goomba';
 import Koopa from '../entities/koopa';
 import Score from '../entities/score';
 
+import "./Game.css";
+
 const CANVAS_WIDTH = 760;
 const CANVAS_HEIGHT = 600;
 

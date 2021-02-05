@@ -1,11 +1,25 @@
 import React, { Component } from "react";
 import Webcam from "react-webcam";
-import { Typography } from "@material-ui/core";
+import { Typography, Grid, withStyles } from "@material-ui/core";
 import * as tf from "@tensorflow/tfjs";
 import { connect } from "react-redux";
 import setPrediction from "../redux/actions/setPrediction";
 import Game from "./Game";
 import videoConstraints from "../CamConstraints";
+import "./CamStyles.css";
+
+const styles = () => ({
+    predictionText: {
+        fontStyle: "italic",
+        textAlign: "center",
+        width: "82.3vh",
+        height: "7vh",
+        color: "#779",
+        borderRadius: "10%",
+        textShadow: "2px 2px rgba(0, 0, 0, .8)",
+        background: "linear-gradient(45deg, rgba(150, 30, 30, 0.92) 20%, rgba(200, 60, 60, 0.92) 80%)",
+    }
+});
 
 class CamDetector extends Component {
 
@@ -48,29 +62,30 @@ class CamDetector extends Component {
     }
 
     render() {
-        const { prediction, predictionProb } = this.props;
+        const { prediction, predictionProb, classes } = this.props;
         const { isCamReady } = this.state;
 
         return (
-            <>
-                <Webcam
-                    ref={this.webcamRef}
-                    audio={false}
-                    screenshotFormat="image/png"
-                    videoConstraints={videoConstraints}
-                    onUserMedia={() => this.camReady()}
-                />
-                {isCamReady ?
-                    <>
-                        <Typography variant="h3">Predicción: {prediction} [{predictionProb} %]</Typography>
-                        <Game />
-                    </>
-                    :
-                    <>
-                        <Typography variant="h3">Cámara aún no lista</Typography>
-                    </>
-                }
-            </>
+            <Grid container item direction="row">
+                <Grid item xs={6}>
+                    <Webcam
+                        className="camdetector camborder"
+                        ref={this.webcamRef}
+                        audio={false}
+                        screenshotFormat="image/png"
+                        videoConstraints={videoConstraints}
+                        onUserMedia={() => this.camReady()}
+                    />
+                </Grid>
+                <Grid item xs={6}>
+                    {isCamReady &&
+                        <>
+                            <Game />
+                            <Typography variant="h4" className={classes.predictionText}>Predicción: {prediction} [{predictionProb.toFixed(2)} %]</Typography>
+                        </>
+                    }
+                </Grid>
+            </Grid>
         );
     }
 }
@@ -88,4 +103,4 @@ const mapDispatchToProps = {
     setPrediction
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CamDetector);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(CamDetector));
