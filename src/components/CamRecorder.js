@@ -8,7 +8,7 @@ import showAlert from "../redux/actions/showAlert";
 import videoConstraints from "../CamConstraints";
 import "./CamStyles.css";
 
-const styles = () => ({
+const styles = theme => ({
     box: {
         fontSize: "2.4rem",
         background: "linear-gradient(45deg, #b00 30%, #d00 90%)",
@@ -22,7 +22,10 @@ const styles = () => ({
         margin: "0.1em",
         textAlign: "center",
         textTransform: "uppercase",
-        textShadow: "3px 3px rgba(0, 0, 0, .4)"
+        textShadow: "3px 3px rgba(0, 0, 0, .4)",
+        [theme.breakpoints.down("sm")]: {
+            fontSize: "1.8rem"
+        },
     },
     button: {
         width: "9em",
