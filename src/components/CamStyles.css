@@ -8,6 +8,13 @@
     height: 70vh;
 }
 
+@media screen and (max-width:600px) {
+    .camdetector {
+        width: 20vh;
+        height: 20vh;
+    }
+}
+
 .camborder {
     flex-shrink: 0;
 	margin: 20px;

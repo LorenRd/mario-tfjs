@@ -8,16 +8,23 @@ import Game from "./Game";
 import videoConstraints from "../CamConstraints";
 import "./CamStyles.css";
 
-const styles = () => ({
+const styles = theme => ({
     predictionText: {
         fontStyle: "italic",
         textAlign: "center",
         width: "82.3vh",
-        height: "7vh",
+        height: "1.4em",
         color: "#779",
         borderRadius: "10%",
         textShadow: "2px 2px rgba(0, 0, 0, .8)",
         background: "linear-gradient(45deg, rgba(150, 30, 30, 0.92) 20%, rgba(200, 60, 60, 0.92) 80%)",
+        [theme.breakpoints.down("sm")]: {
+            width: "100vw",
+            fontSize: "1.6rem",
+        },
+    },
+    camCenter: {
+        textAlign: "center"
     }
 });
 
@@ -67,7 +74,7 @@ class CamDetector extends Component {
 
         return (
             <Grid container item direction="row">
-                <Grid item xs={6}>
+                <Grid item xs={12} sm={6} className={classes.camCenter}>
                     <Webcam
                         className="camdetector camborder"
                         ref={this.webcamRef}
@@ -77,7 +84,7 @@ class CamDetector extends Component {
                         onUserMedia={() => this.camReady()}
                     />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12} sm={6}>
                     {isCamReady &&
                         <>
                             <Game />

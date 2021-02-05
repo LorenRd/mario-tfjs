@@ -25,7 +25,10 @@ const styles = theme => ({
         margin: "0.1em",
         textAlign: "center",
         textTransform: "uppercase",
-        textShadow: "1px 1px rgba(0, 0, 0, .4)"
+        textShadow: "1px 1px rgba(0, 0, 0, .4)",
+        [theme.breakpoints.down("sm")]: {
+            width: "6em",
+        },
     },
     content: {
         height: "80vh",
@@ -40,6 +43,9 @@ const styles = theme => ({
         fontSize: "1.6rem",
         border: "1px solid transparent",
         boxShadow: "0 0 5px 5px rgba(0, 0, 0, 0.5)",
+        [theme.breakpoints.down("sm")]: {
+            fontSize: "1.2rem"
+        },
     },
     footerText: {
         fontStyle: "italic",
@@ -47,7 +53,10 @@ const styles = theme => ({
         marginRight: "0.5em",
         color: "#111",
         opacity: "0.85",
-        fontSize: "1.3rem"
+        fontSize: "1.3rem",
+        [theme.breakpoints.down("sm")]: {
+            fontSize: "1rem"
+        },
     },
 });
 
@@ -87,7 +96,7 @@ class App extends Component {
                         {model ?
                             playing ? <CamDetector /> : <CamRecorder />
                             :
-                            <Grid container item xs={12} direction="column" alignItems="center" justify="center">
+                            <Grid container item sm={12} direction="column" alignItems="center" justify="center">
                                 <Typography className={classes.loadingModel} variant="h3">Cargando mobilenet</Typography>
                             </Grid>
                         }

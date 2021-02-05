@@ -2,3 +2,9 @@
     margin-top: 5vh;
     height: 65vh;
 }
+
+@media screen and (max-width: 600px) {
+    #game-canvas {
+        height: 40vh;
+    }
+}
