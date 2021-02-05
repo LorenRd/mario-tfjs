@@ -1,4 +1,5 @@
 import { GRAVITY } from "./physics";
+import store from "../redux/store";
 
 const input = {
     down: {},
@@ -6,11 +7,12 @@ const input = {
 
     update(data) {
         const mario = data.entities.mario;
-
+        
         if (data.userControl) {
-
+            const prediction = store.getState().DataReducer.prediction;
+            console.log(prediction);
             // Movimiento a la izquierda
-            if (this.isDown(37) || this.isDown(65)) {
+            if (prediction === "back") {
                 if (mario.velY === GRAVITY) {
                     if (mario.bigMario) {
                         mario.currentState = mario.states.bigWalking;
@@ -23,7 +25,7 @@ const input = {
                 mario.direction = 'left';
             }
             // Movimiento a la derecha
-            if (this.isDown(39) || this.isDown(68)) {
+            if (prediction === "forward") {
                 if (mario.velY === GRAVITY) {
                     if (mario.bigMario) {
                         mario.currentState = mario.states.bigWalking;
@@ -35,9 +37,8 @@ const input = {
                 }
                 mario.direction = 'right';
             }
-
             // Salto
-            if (this.isPressed(38) || this.isPressed(32) || this.isPressed(87)) {
+            if (prediction === "jump") {
                 if (mario.bigMario) {
                     mario.currentState = mario.states.bigJumping;
                 } else {
