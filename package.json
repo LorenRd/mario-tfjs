@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.3",
+    "@material-ui/lab": "^4.0.0-alpha.57",
     "@tensorflow-models/knn-classifier": "^1.2.2",
     "@tensorflow-models/mobilenet": "^2.0.4",
     "@tensorflow/tfjs": "^3.0.0",
@@ -15,8 +16,10 @@
     "firebase-tools": "^9.2.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-redux": "^7.2.2",
     "react-scripts": "4.0.1",
     "react-webcam": "^5.2.2",
+    "redux": "^4.0.5",
     "web-vitals": "^0.2.4"
   },
   "scripts": {
