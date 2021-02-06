@@ -5,7 +5,7 @@ import * as tf from "@tensorflow/tfjs";
 import { connect } from "react-redux";
 import setPrediction from "../redux/actions/setPrediction";
 import Game from "./Game";
-import videoConstraints from "../CamConstraints";
+//import videoConstraints from "../CamConstraints";
 import "./CamStyles.css";
 
 const styles = theme => ({
@@ -80,7 +80,7 @@ class CamDetector extends Component {
                         ref={this.webcamRef}
                         audio={false}
                         screenshotFormat="image/png"
-                        videoConstraints={videoConstraints}
+                        videoConstraints={this.props.videoConstraints}
                         onUserMedia={() => this.camReady()}
                     />
                 </Grid>
@@ -102,7 +102,9 @@ const mapStateToProps = (state) => {
         model: state.DataReducer.model,
         classifier: state.DataReducer.classifier,
         prediction: state.DataReducer.prediction,
-        predictionProb: state.DataReducer.predictionProb
+        predictionProb: state.DataReducer.predictionProb,
+
+        videoConstraints: state.CameraReducer
     };
 };
 

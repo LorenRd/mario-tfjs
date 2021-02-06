@@ -1,8 +1,10 @@
 import { createStore, combineReducers } from "redux";
 import DataReducer from "./reducers/DataReducer";
+import CameraReducer from "./reducers/CameraReducer";
 
 const reducers = combineReducers({
-    DataReducer
+    DataReducer,
+    CameraReducer
 });
 
 const store = createStore(

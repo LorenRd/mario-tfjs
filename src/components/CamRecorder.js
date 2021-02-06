@@ -5,8 +5,9 @@ import * as tf from "@tensorflow/tfjs";
 import { connect } from "react-redux";
 import setPlaying from "../redux/actions/setPlaying";
 import showAlert from "../redux/actions/showAlert";
-import videoConstraints from "../CamConstraints";
+//import videoConstraints from "../CamConstraints";
 import "./CamStyles.css";
+import changeCamera from "../redux/actions/changeCamera";
 
 const styles = theme => ({
     box: {
@@ -91,7 +92,7 @@ class CamRecorder extends Component {
         const { model, classifier } = this.props;
         const { currentAction } = this.state;
 
-        const camImage = this.webcamRef.current.getScreenshot({ width: videoConstraints.width, height: videoConstraints.height });
+        const camImage = this.webcamRef.current.getScreenshot({ width: this.props.videoConstraints.width, height: this.props.videoConstraints.height });
 
         this.imageToTensor(camImage)
             .then(img => {
@@ -132,6 +133,9 @@ class CamRecorder extends Component {
 
         this.props.setPlaying();
     }
+    changeCameraMobile(){
+        this.props.changeCamera(this.props.videoConstraints.facingMode);
+    }
 
     render() {
         const { currentAction, numPhotos, isCamReady } = this.state;
@@ -146,16 +150,18 @@ class CamRecorder extends Component {
                             ref={this.webcamRef}
                             audio={false}
                             screenshotFormat="image/png"
-                            videoConstraints={videoConstraints}
+                            videoConstraints={this.props.videoConstraints}
                             onUserMedia={() => this.camReady()}
                         />
+                        <br />
+                        <Button variant="contained" className={classes.button} onClick={() => this.changeCameraMobile()}>Cambiar cámara</Button>
                     </Grid>
                 </Grid>
                 <Grid container item>
                     {isCamReady &&
                         <>
                             <Grid container item alignItems="center" justify="center">
-                                <Grid item>
+                               <Grid item>
                                     <Typography className={classes.box} variant="h3">{actions[currentAction].name}</Typography>
                                 </Grid>
                                 <Grid item>
@@ -190,10 +196,13 @@ const mapStateToProps = (state) => {
     return {
         model: state.DataReducer.model,
         classifier: state.DataReducer.classifier,
+
+        videoConstraints: state.CameraReducer
     };
 };
 
 const mapDispatchToProps = {
+    changeCamera,
     setPlaying,
     showAlert
 };
