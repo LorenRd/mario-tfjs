@@ -5,7 +5,6 @@ import * as tf from "@tensorflow/tfjs";
 import { connect } from "react-redux";
 import setPrediction from "../redux/actions/setPrediction";
 import Game from "./Game";
-//import videoConstraints from "../CamConstraints";
 import "./CamStyles.css";
 
 const styles = theme => ({

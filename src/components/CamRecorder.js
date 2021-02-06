@@ -5,9 +5,9 @@ import * as tf from "@tensorflow/tfjs";
 import { connect } from "react-redux";
 import setPlaying from "../redux/actions/setPlaying";
 import showAlert from "../redux/actions/showAlert";
-//import videoConstraints from "../CamConstraints";
 import "./CamStyles.css";
 import changeCamera from "../redux/actions/changeCamera";
+import { MobileView } from "react-device-detect";
 
 const styles = theme => ({
     box: {
@@ -36,6 +36,11 @@ const styles = theme => ({
         '&:hover': {
             backgroundColor: "#ff9800",
         }
+    },
+    changeCamButton: {
+        position: "absolute",
+        top: 0,
+        right: 0
     }
 });
 
@@ -133,7 +138,7 @@ class CamRecorder extends Component {
 
         this.props.setPlaying();
     }
-    changeCameraMobile(){
+    changeCameraMobile() {
         this.props.changeCamera(this.props.videoConstraints.facingMode);
     }
 
@@ -153,15 +158,16 @@ class CamRecorder extends Component {
                             videoConstraints={this.props.videoConstraints}
                             onUserMedia={() => this.camReady()}
                         />
-                        <br />
-                        <Button variant="contained" className={classes.button} onClick={() => this.changeCameraMobile()}>Cambiar cámara</Button>
+                        <MobileView>
+                        <Button variant="contained" className={`${classes.button} ${classes.changeCamButton}`} onClick={() => this.changeCameraMobile()}>Cambiar cámara</Button>
+                        </MobileView>
                     </Grid>
                 </Grid>
                 <Grid container item>
                     {isCamReady &&
                         <>
                             <Grid container item alignItems="center" justify="center">
-                               <Grid item>
+                                <Grid item>
                                     <Typography className={classes.box} variant="h3">{actions[currentAction].name}</Typography>
                                 </Grid>
                                 <Grid item>
@@ -196,7 +202,6 @@ const mapStateToProps = (state) => {
     return {
         model: state.DataReducer.model,
         classifier: state.DataReducer.classifier,
-
         videoConstraints: state.CameraReducer
     };
 };
