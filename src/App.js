@@ -82,7 +82,7 @@ class App extends Component {
                     <Typography className={classes.footerTitleText} variant="h5">MARIO TFJS - ¡Juega a Super Mario Bros con tu cámara!</Typography>
                 </Grid>
                 <Grid item>
-                    <Typography className={classes.footerText} variant="h5">Andrés Martínez &amp; Lorenzo Roldán</Typography>
+                    <Typography className={classes.footerText} variant="h5">Andrés Martínez &amp; Lorenzo Rondán</Typography>
                 </Grid>
                 <Grid item>
                     <Typography className={classes.footerText} variant="h5">Machine Learning Engineering (2021)</Typography>

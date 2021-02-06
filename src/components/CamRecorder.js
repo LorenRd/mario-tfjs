@@ -11,7 +11,7 @@ import "./CamStyles.css";
 const styles = theme => ({
     box: {
         fontSize: "2.4rem",
-        background: "linear-gradient(45deg, #b00 30%, #d00 90%)",
+        background: "#ff9800",
         border: 0,
         borderRadius: "10px",
         boxShadow: "10px 3px 5px 2px rgba(0, 0, 0, .5)",
@@ -30,10 +30,10 @@ const styles = theme => ({
     button: {
         width: "9em",
         margin: "0.4em",
-        backgroundColor: "#b00",
+        backgroundColor: "#ffb13d",
         boxShadow: "10px 3px 5px 2px rgba(0, 0, 0, .5)",
         '&:hover': {
-            backgroundColor: "#d00",
+            backgroundColor: "#ff9800",
         }
     }
 });

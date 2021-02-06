@@ -5,7 +5,7 @@ Gestión TI, Datos y Cloud de la Universidad de Sevilla.
 
 ## Autores
 
-Andrés Martínez y Lorenzo Roldán
+Andrés Martínez y Lorenzo Rondán
 
 ## Objetivos
 
