@@ -38,16 +38,46 @@ class CamDetector extends Component {
     }
 
     componentDidMount() {
-        requestAnimationFrame(() => this.detect());
+        if(this.props.modelType === "mobilenet") {
+            requestAnimationFrame(() => this.detectMobilenet());
+        } else {
+            requestAnimationFrame(() => this.detectPretrained());
+        }
     }
 
-    async detect() {
+    async detectPretrained() {
+        
+        const { model, setPrediction } = this.props;
+
+        if (typeof this.webcamRef.current === "undefined" ||
+            this.webcamRef.current === null ||
+            this.webcamRef.current.video.readyState !== 4) {
+            requestAnimationFrame(() => this.detectPretrained());
+            return;
+        }
+
+        const img = tf.browser.fromPixels(this.webcamRef.current.video);
+        const resized = tf.image.resizeBilinear(img, [224, 224]);
+        const expanded = resized.expandDims(0);
+        const result = model.execute(expanded);
+        //console.log(result.arraySync());
+
+        //setPrediction(result.label, result.confidences[result.label] * 100);
+
+        tf.dispose(expanded);
+        tf.dispose(resized);
+        tf.dispose(img);
+
+        requestAnimationFrame(() => this.detectPretrained());
+    }
+
+    async detectMobilenet() {
         const { model, classifier, setPrediction } = this.props;
 
         if (typeof this.webcamRef.current === "undefined" ||
             this.webcamRef.current === null ||
             this.webcamRef.current.video.readyState !== 4) {
-            requestAnimationFrame(() => this.detect());
+            requestAnimationFrame(() => this.detectMobilenet());
             return;
         }
 
@@ -60,7 +90,7 @@ class CamDetector extends Component {
 
         tf.dispose(img);
 
-        requestAnimationFrame(() => this.detect());
+        requestAnimationFrame(() => this.detectMobilenet());
     }
 
     camReady() {
@@ -102,7 +132,7 @@ const mapStateToProps = (state) => {
         classifier: state.DataReducer.classifier,
         prediction: state.DataReducer.prediction,
         predictionProb: state.DataReducer.predictionProb,
-
+        modelType: state.DataReducer.modelType,
         videoConstraints: state.CameraReducer
     };
 };

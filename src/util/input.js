@@ -10,7 +10,7 @@ const input = {
         
         if (data.userControl) {
             const prediction = store.getState().DataReducer.prediction;
-            console.log(prediction);
+            
             // Movimiento a la izquierda
             if (prediction === "back") {
                 if (mario.velY === GRAVITY) {

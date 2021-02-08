@@ -1,12 +1,14 @@
 import * as knnClassifier from "@tensorflow-models/knn-classifier";
 
 import { type as SET_MODEL } from "../actions/setModel";
+import { type as SET_MODEL_TYPE } from "../actions/setModelType";
 import { type as SET_PLAYING } from "../actions/setPlaying";
 import { type as SET_PREDICTION } from "../actions/setPrediction";
 import { type as SHOW_ALERT } from "../actions/showAlert";
 import { type as ALERT_FINISHED } from "../actions/alertFinished";
 
 const defaultState = {
+    modelType: null,
     model: null,
     classifier: knnClassifier.create(),
     playing: false,
@@ -23,6 +25,11 @@ const reducer = (state = defaultState, { type, payload }) => {
             return {
                 ...state,
                 model: payload
+            };
+        case SET_MODEL_TYPE:
+            return {
+                ...state,
+                modelType: payload
             };
         case SET_PLAYING:
             return {

@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import { IconButton, withStyles, Dialog, DialogTitle, DialogContent } from "@material-ui/core";
+import { VideogameAsset } from "@material-ui/icons";
+import { connect } from "react-redux";
 
 import render from '../util/render';
 import input from '../util/input';
@@ -19,8 +22,27 @@ import "./Game.css";
 const CANVAS_WIDTH = 760;
 const CANVAS_HEIGHT = 600;
 
+const styles = () => ({
+    controlsButton: {
+        backgroundColor: "#ffb13d",
+        boxShadow: "10px 3px 5px 2px rgba(0, 0, 0, .5)",
+        '&:hover': {
+            backgroundColor: "#ff9800",
+        },
+        position: "absolute",
+        top: 0,
+        left: 0
+    }
+});
+
 class Game extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            controlsDialogOpened: false,
+        }
+    }
     initGameVariables(spriteSheet, canvas, tileset, sounds) {
 
         const data = {
@@ -122,16 +144,50 @@ class Game extends Component {
         this.startGame();
     }
 
+    showControls() {
+        this.setState({ controlsDialogOpened: true });
+    }
+
+    hideControls() {
+        this.setState({ controlsDialogOpened: false });
+    }
+
     render() {
+        const { classes, modelType } = this.props;
+        const { controlsDialogOpened } = this.state;
+
         return (
             <div>
                 <canvas id="game-canvas" width={CANVAS_WIDTH} height={CANVAS_HEIGHT}></canvas>
                 <audio id="background_music" loop>
                     <source src="./audio/music/mario_theme.mp3" type="audio/mp3" />
                 </audio>
+
+                {modelType === "entrenado" &&
+                    <>
+                        <IconButton className={classes.controlsButton} onClick={() => this.showControls()}>
+                            <VideogameAsset />
+                        </IconButton>
+
+                        <Dialog onClose={() => this.hideControls()} open={controlsDialogOpened}>
+                            <DialogTitle onClose={() => this.hideControls()}>
+                                Controles del juego
+                            </DialogTitle>
+                            <DialogContent dividers>
+                                <img src="/controls.png" alt="Controles"></img>
+                            </DialogContent>
+                        </Dialog>
+                    </>
+                }
             </div>
         )
     }
 }
 
-export default Game;
+const mapStateToProps = (state) => {
+    return {
+        modelType: state.DataReducer.modelType,
+    };
+};
+
+export default connect(mapStateToProps)(withStyles(styles)(Game));

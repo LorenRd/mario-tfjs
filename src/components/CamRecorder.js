@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Webcam from "react-webcam";
-import { Button, Typography, Grid, withStyles } from "@material-ui/core";
+import { Button, Typography, Grid, withStyles, IconButton } from "@material-ui/core";
+import { SwitchCamera } from '@material-ui/icons';
 import * as tf from "@tensorflow/tfjs";
 import { connect } from "react-redux";
 import setPlaying from "../redux/actions/setPlaying";
@@ -38,6 +39,11 @@ const styles = theme => ({
         }
     },
     changeCamButton: {
+        backgroundColor: "#ffb13d",
+        boxShadow: "10px 3px 5px 2px rgba(0, 0, 0, .5)",
+        '&:hover': {
+            backgroundColor: "#ff9800",
+        },
         position: "absolute",
         top: 0,
         right: 0
@@ -58,8 +64,12 @@ const actions = [
         class: "jump"
     },
     {
-        name: "Quieto",
-        class: "stop"
+        name: "Salto →",
+        class: "forward_jump"
+    },
+    {
+        name: "Salto ←",
+        class: "back_jump"
     }
 ];
 
@@ -159,7 +169,9 @@ class CamRecorder extends Component {
                             onUserMedia={() => this.camReady()}
                         />
                         <MobileView>
-                        <Button variant="contained" className={`${classes.button} ${classes.changeCamButton}`} onClick={() => this.changeCameraMobile()}>Cambiar cámara</Button>
+                            <IconButton className={classes.changeCamButton} onClick={() => this.changeCameraMobile()}>
+                                <SwitchCamera/>
+                            </IconButton>
                         </MobileView>
                     </Grid>
                 </Grid>
