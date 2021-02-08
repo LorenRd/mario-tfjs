@@ -47,7 +47,7 @@ class CamDetector extends Component {
 
     async detectPretrained() {
         
-        const { model, setPrediction } = this.props;
+        /*const { model, setPrediction } = this.props;
 
         if (typeof this.webcamRef.current === "undefined" ||
             this.webcamRef.current === null ||
@@ -68,7 +68,7 @@ class CamDetector extends Component {
         tf.dispose(resized);
         tf.dispose(img);
 
-        requestAnimationFrame(() => this.detectPretrained());
+        requestAnimationFrame(() => this.detectPretrained());*/
     }
 
     async detectMobilenet() {
