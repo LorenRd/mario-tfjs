@@ -9,6 +9,7 @@ import showAlert from "../redux/actions/showAlert";
 import "./CamStyles.css";
 import changeCamera from "../redux/actions/changeCamera";
 import { MobileView } from "react-device-detect";
+import actions from "../gameActions";
 
 const styles = theme => ({
     box: {
@@ -49,29 +50,6 @@ const styles = theme => ({
         right: 0
     }
 });
-
-const actions = [
-    {
-        name: "Adelante",
-        class: "forward"
-    },
-    {
-        name: "Atrás",
-        class: "back"
-    },
-    {
-        name: "Salto",
-        class: "jump"
-    },
-    {
-        name: "Salto →",
-        class: "forward_jump"
-    },
-    {
-        name: "Salto ←",
-        class: "back_jump"
-    }
-];
 
 class CamRecorder extends Component {
 

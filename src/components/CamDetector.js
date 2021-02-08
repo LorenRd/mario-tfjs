@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import setPrediction from "../redux/actions/setPrediction";
 import Game from "./Game";
 import "./CamStyles.css";
+import actions from "../gameActions";
 
 const styles = theme => ({
     predictionText: {
@@ -47,7 +48,7 @@ class CamDetector extends Component {
 
     async detectPretrained() {
         
-        /*const { model, setPrediction } = this.props;
+        const { model, setPrediction } = this.props;
 
         if (typeof this.webcamRef.current === "undefined" ||
             this.webcamRef.current === null ||
@@ -60,15 +61,18 @@ class CamDetector extends Component {
         const resized = tf.image.resizeBilinear(img, [224, 224]);
         const expanded = resized.expandDims(0);
         const result = model.execute(expanded);
-        //console.log(result.arraySync());
 
-        //setPrediction(result.label, result.confidences[result.label] * 100);
+        const scores = result.arraySync()[0];
+        const maxScore = result.max().arraySync();
+        const maxScoreIndex = scores.indexOf(maxScore);
+
+        setPrediction(actions[maxScoreIndex].class, maxScore * 100);
 
         tf.dispose(expanded);
         tf.dispose(resized);
         tf.dispose(img);
 
-        requestAnimationFrame(() => this.detectPretrained());*/
+        requestAnimationFrame(() => this.detectPretrained());
     }
 
     async detectMobilenet() {
