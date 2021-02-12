@@ -133,28 +133,27 @@ class Game extends Component {
             setInterval(async () => {
                 if (data.resetting) {
                     data = this.initGameVariables(spriteSheet, canvas, tileset, sounds);
-                } else {
-
-                    if(this.state.controlsDialogOpened) return;
-
-                    if (this.props.predictionFunc) {
-                        predictWaitCounter++;
-                        if (predictWaitCounter >= PREDICT_WAIT_FRAMES) {
-                            predictWaitCounter = 0;
-                            await this.props.predictionFunc();
-                        }
-                    }
-
-                    input.update(data);
-                    animation.update(data);
-                    movement.update(data);
-                    physics.update(data);
-
-                    render.updateView(data);
-                    render.update(data, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-                    data.animationFrame += 1;
                 }
+
+                if (this.state.controlsDialogOpened) return;
+
+                if (this.props.predictionFunc) {
+                    predictWaitCounter++;
+                    if (predictWaitCounter >= PREDICT_WAIT_FRAMES) {
+                        predictWaitCounter = 0;
+                        await this.props.predictionFunc();
+                    }
+                }
+
+                input.update(data);
+                animation.update(data);
+                movement.update(data);
+                physics.update(data);
+
+                render.updateView(data);
+                render.update(data, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+                data.animationFrame += 1;
             }, 1000 / FPS);
         });
     }

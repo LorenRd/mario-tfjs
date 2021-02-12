@@ -1,5 +1,6 @@
 import Entity from './entity';
 import Sprite from './sprite';
+import { GRAVITY } from "../util/physics";
 
 export default class Mario extends Entity {
     constructor(img, xPos, yPos, width, height) {
@@ -79,10 +80,11 @@ export default class Mario extends Entity {
         this.states = {
             jumping: {
                 movement(data) {
-                    if (self.velY === 1.2) {
+                    if (self.velY === GRAVITY) {
                         const jumpSound = self.jumpSound.cloneNode();
                         jumpSound.play();
                         self.velY -= self.jumpSpeed;
+                        self.onFloor = false;
                     }
                 },
                 animation(data) {
@@ -96,9 +98,10 @@ export default class Mario extends Entity {
 
             bigJumping: {
                 movement(data) {
-                    if (self.velY === 1.2) {
+                    if (self.velY === GRAVITY) {
                         self.jumpSound.play();
                         self.velY -= self.jumpSpeed;
+                        self.onFloor = false;
                     }
                 },
                 animation(data) {
@@ -251,11 +254,12 @@ export default class Mario extends Entity {
         this.direction = 'right';
         this.bigMario = false;
         this.velY = 0;
-        this.velX = 1.0;
+        this.velX = 2.0;
         this.xPos = xPos;
         this.yPos = yPos;
         this.width = width;
         this.height = height;
         this.jumpSpeed = 14;
+        this.onFloor = false;
     }
 }

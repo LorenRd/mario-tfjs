@@ -1,4 +1,5 @@
 export const GRAVITY = 1.2;
+const KOOPA_SLIDE = 5;
 
 const physics = {
 
@@ -64,7 +65,7 @@ const physics = {
                 if (entity.type === 'koopa' &&
                     entity.currentState === entity.states.hiding) {
                     entity.direction = 'right';
-                    entity.xPos += 5;
+                    entity.xPos += KOOPA_SLIDE;
 
                     setTimeout(() => {
                         entity.currentState = entity.states.sliding;
@@ -86,7 +87,7 @@ const physics = {
                 if (entity.type === 'koopa' &&
                     entity.currentState === entity.states.hiding) {
                     entity.direction = 'left';
-                    entity.xPos -= 5;
+                    entity.xPos -= KOOPA_SLIDE;
 
                     setTimeout(() => {
                         entity.currentState = entity.states.sliding;
@@ -321,6 +322,7 @@ const physics = {
                     } else {
                         entity.currentState = entity.states.standing;
                     }
+                    entity.onFloor = true;
                 }
                 entity.yPos = scene.yPos - entity.height - 1;
                 entity.velY = 0;

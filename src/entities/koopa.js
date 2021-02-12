@@ -77,7 +77,7 @@ export default class Koopa extends Entity {
 
             sliding: {
                 movement(data) {
-                    self.velX = 3;
+                    self.velX = self.slideSpeed;
                     if (self.direction === 'right') {
                         self.xPos += self.velX;
                     } else {
@@ -99,5 +99,6 @@ export default class Koopa extends Entity {
         this.yPos = yPos;
         this.width = width;
         this.height = height;
+        this.slideSpeed = 3;
     }
 }
