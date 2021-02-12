@@ -100,6 +100,9 @@ class CamDetector extends Component {
         const { prediction, predictionProb, classes } = this.props;
         const { isCamReady } = this.state;
 
+        const predictionItem = actions.find(v => v.class === prediction);
+        const predictionText = predictionItem ? predictionItem.name : prediction;
+
         return (
             <Grid container item direction="row">
                 <Grid item xs={12} sm={6} className={classes.camCenter}>
@@ -116,7 +119,7 @@ class CamDetector extends Component {
                     {isCamReady &&
                         <>
                             <Game />
-                            <Typography variant="h4" className={classes.predictionText}>Predicción: {prediction} [{predictionProb.toFixed(2)} %]</Typography>
+                            <Typography variant="h4" className={classes.predictionText}>Predicción: {predictionText} [{predictionProb.toFixed(2)} %]</Typography>
                         </>
                     }
                 </Grid>
