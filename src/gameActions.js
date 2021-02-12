@@ -5,16 +5,8 @@ const actions = [
         class: "back"
     },
     {
-        name: "Salto ←",
-        class: "back_jump"
-    },
-    {
         name: "Adelante",
         class: "forward"
-    },
-    {
-        name: "Salto →",
-        class: "forward_jump"
     },
     {
         name: "Salto",

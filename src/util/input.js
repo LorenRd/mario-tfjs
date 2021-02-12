@@ -9,7 +9,14 @@ const input = {
         const mario = data.entities.mario;
 
         if (data.userControl) {
-            const { prediction, predictionProb } = store.getState().DataReducer;
+            const dataReducer = store.getState().DataReducer;
+
+            let prediction = dataReducer.prediction;
+            const predictionProb = dataReducer.predictionProb;
+            if(prediction === "jump") {
+                if(mario.direction === "right") prediction = "forward_jump";
+                else prediction = "back_jump";
+            }
 
             // Movimiento a la izquierda
             if ((prediction === "back" || prediction === "back_jump") && predictionProb > 0.7) {
@@ -40,7 +47,7 @@ const input = {
             }
 
             // Salto
-            if ((prediction === "jump" || prediction === "forward_jump" || prediction === "back_jump") && predictionProb > 0.7) {
+            if ((prediction === "forward_jump" || prediction === "back_jump") && predictionProb > 0.7) {
                 if (mario.onFloor) {
                     if (mario.bigMario) {
                         mario.currentState = mario.states.bigJumping;
