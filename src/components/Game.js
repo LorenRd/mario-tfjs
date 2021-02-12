@@ -21,6 +21,8 @@ import "./Game.css";
 
 const CANVAS_WIDTH = 760;
 const CANVAS_HEIGHT = 600;
+const FPS = 60;
+const PREDICT_WAIT_FRAMES = 5;
 
 const styles = () => ({
     controlsButton: {
@@ -43,6 +45,7 @@ class Game extends Component {
             controlsDialogOpened: false,
         }
     }
+
     initGameVariables(spriteSheet, canvas, tileset, sounds) {
 
         const data = {
@@ -115,13 +118,33 @@ class Game extends Component {
         spriteSheet.addEventListener('load', () => {
 
             let data = this.initGameVariables(spriteSheet, canvas, tileset, sounds);
+            let predictWaitCounter = 0;
 
             // Bucle principal del juego
             const loop = () => {
 
+                requestAnimationFrame(loop);
+
+                render.update(data, CANVAS_WIDTH, CANVAS_HEIGHT);
+            };
+
+            requestAnimationFrame(loop);
+
+            setInterval(async () => {
                 if (data.resetting) {
                     data = this.initGameVariables(spriteSheet, canvas, tileset, sounds);
                 } else {
+
+                    if(this.state.controlsDialogOpened) return;
+
+                    if (this.props.predictionFunc) {
+                        predictWaitCounter++;
+                        if (predictWaitCounter >= PREDICT_WAIT_FRAMES) {
+                            predictWaitCounter = 0;
+                            await this.props.predictionFunc();
+                        }
+                    }
+
                     input.update(data);
                     animation.update(data);
                     movement.update(data);
@@ -132,11 +155,7 @@ class Game extends Component {
 
                     data.animationFrame += 1;
                 }
-
-                requestAnimationFrame(loop);
-            };
-
-            requestAnimationFrame(loop);
+            }, 1000 / FPS);
         });
     }
 
@@ -187,6 +206,7 @@ class Game extends Component {
 const mapStateToProps = (state) => {
     return {
         modelType: state.DataReducer.modelType,
+        predictionFunc: state.DataReducer.predictionFunc
     };
 };
 

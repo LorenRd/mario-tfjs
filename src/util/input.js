@@ -1,5 +1,5 @@
 import { GRAVITY } from "./physics";
-import store from "../redux/store";
+//import store from "../redux/store";
 
 const input = {
     down: {},
@@ -9,10 +9,10 @@ const input = {
         const mario = data.entities.mario;
         
         if (data.userControl) {
-            const prediction = store.getState().DataReducer.prediction;
+            //const prediction = store.getState().DataReducer.prediction;
             
             // Movimiento a la izquierda
-            if (prediction === "back") {
+            if (0) {
                 if (mario.velY === GRAVITY) {
                     if (mario.bigMario) {
                         mario.currentState = mario.states.bigWalking;
@@ -25,7 +25,7 @@ const input = {
                 mario.direction = 'left';
             }
             // Movimiento a la derecha
-            if (prediction === "forward") {
+            if (1) {
                 if (mario.velY === GRAVITY) {
                     if (mario.bigMario) {
                         mario.currentState = mario.states.bigWalking;
@@ -38,29 +38,17 @@ const input = {
                 mario.direction = 'right';
             }
             // Salto
-            if (prediction === "jump") {
-                if (mario.bigMario) {
-                    mario.currentState = mario.states.bigJumping;
-                } else {
-                    mario.currentState = mario.states.jumping;
+            if (0) {
+                if(mario.currentState !== mario.states.jumping && mario.currentState !== mario.states.bigJumping) {
+                    if (mario.bigMario) {
+                        mario.currentState = mario.states.bigJumping;
+                    } else {
+                        mario.currentState = mario.states.jumping;
+                    }
                 }
             }
         } else {
             mario.currentState = mario.states.dead;
-        }
-    },
-
-    // TODO Eliminar al integrar con mobilenet
-    isDown(code) {
-        return this.down[code];
-    },
-
-    isPressed(code) {
-        if (this.pressed[code]) {
-            return false;
-        } else if (this.down[code]) {
-            this.pressed[code] = true;
-            return this.pressed[code];
         }
     },
 };

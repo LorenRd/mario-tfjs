@@ -4,6 +4,7 @@ import { Typography, Grid, withStyles } from "@material-ui/core";
 import * as tf from "@tensorflow/tfjs";
 import { connect } from "react-redux";
 import setPrediction from "../redux/actions/setPrediction";
+import setPredictionFunction from "../redux/actions/setPredictionFunction";
 import Game from "./Game";
 import "./CamStyles.css";
 import actions from "../gameActions";
@@ -40,27 +41,26 @@ class CamDetector extends Component {
 
     componentDidMount() {
         if(this.props.modelType === "mobilenet") {
-            requestAnimationFrame(() => this.detectMobilenet());
+            this.props.setPredictionFunction(this.detectMobilenet.bind(this));
         } else {
-            requestAnimationFrame(() => this.detectPretrained());
+            this.props.setPredictionFunction(this.detectPretrained.bind(this));
         }
     }
 
-    async detectPretrained() {
+    detectPretrained() {
         
         const { model, setPrediction } = this.props;
 
         if (typeof this.webcamRef.current === "undefined" ||
             this.webcamRef.current === null ||
             this.webcamRef.current.video.readyState !== 4) {
-            requestAnimationFrame(() => this.detectPretrained());
             return;
         }
 
         const img = tf.browser.fromPixels(this.webcamRef.current.video);
         const resized = tf.image.resizeBilinear(img, [224, 224]);
         const expanded = resized.expandDims(0);
-        const result = model.execute(expanded);
+        const result = model.predict(expanded);
 
         const scores = result.arraySync()[0];
         const maxScore = result.max().arraySync();
@@ -71,8 +71,6 @@ class CamDetector extends Component {
         tf.dispose(expanded);
         tf.dispose(resized);
         tf.dispose(img);
-
-        requestAnimationFrame(() => this.detectPretrained());
     }
 
     async detectMobilenet() {
@@ -81,7 +79,6 @@ class CamDetector extends Component {
         if (typeof this.webcamRef.current === "undefined" ||
             this.webcamRef.current === null ||
             this.webcamRef.current.video.readyState !== 4) {
-            requestAnimationFrame(() => this.detectMobilenet());
             return;
         }
 
@@ -93,8 +90,6 @@ class CamDetector extends Component {
         setPrediction(result.label, result.confidences[result.label] * 100);
 
         tf.dispose(img);
-
-        requestAnimationFrame(() => this.detectMobilenet());
     }
 
     camReady() {
@@ -142,7 +137,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-    setPrediction
+    setPrediction,
+    setPredictionFunction
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(CamDetector));

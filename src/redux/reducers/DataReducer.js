@@ -4,6 +4,7 @@ import { type as SET_MODEL } from "../actions/setModel";
 import { type as SET_MODEL_TYPE } from "../actions/setModelType";
 import { type as SET_PLAYING } from "../actions/setPlaying";
 import { type as SET_PREDICTION } from "../actions/setPrediction";
+import { type as SET_PREDICTION_FUNC } from "../actions/setPredictionFunction";
 import { type as SHOW_ALERT } from "../actions/showAlert";
 import { type as ALERT_FINISHED } from "../actions/alertFinished";
 
@@ -16,6 +17,7 @@ const defaultState = {
     predictionProb: 0,
     severity: "success",
     message: "",
+    predictionFunc: null,
 };
 
 const reducer = (state = defaultState, { type, payload }) => {
@@ -41,6 +43,11 @@ const reducer = (state = defaultState, { type, payload }) => {
                 ...state,
                 prediction: payload.prediction,
                 predictionProb: payload.predictionProb
+            };
+        case SET_PREDICTION_FUNC:
+            return {
+                ...state,
+                predictionFunc: payload
             };
         case SHOW_ALERT:
             return {
