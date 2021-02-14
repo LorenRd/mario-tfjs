@@ -1,29 +1,29 @@
-# Mario TFJS - ¡Juega a Super Mario Bros con tu cámara!
+![Logo](/media/Logo.png)
 
-Este es un proyecto realizado para la asignatura de Machine Learning Engineering del máster en 
-Gestión TI, Datos y Cloud de la Universidad de Sevilla.
+# Mario TFJS - ¡Play Super Mario Bros with your camera!
 
-## Autores
+This is a project carried for the Machine Learning Engineering subject of the Master's Degree in 
+IT, Data and Cloud at the University of Seville.
 
-Andrés Martínez y Lorenzo Rondán
+![Demo](/media/Demo.gif)
 
-## Objetivos
 
-El objetivo de este proyecto es realizar un clasificador de imágenes usando 2 métodos: usando el modelo
-preentrenado de MobileNet y realizar "transfer learning" para que sea capaz de detectar los gestos
-que indiquemos usando la cámara, y mediante un modelo preentrenado usando TensorFlow en local.
+## Authors
 
-Las detecciones realizadas servirán de dispositivo de entrada para un videojuego. En este caso,
-hemos seleccionado el clásico nivel 1-1 de Super Mario Bros. Las acciones disponibles son las siguientes:
+[Andrés Martínez](https://github.com/amg98) & [Lorenzo Rondán](https://github.com/LorenRd)
 
-- Avanzar
-- Retroceder
-- Saltar
-- Quedarse quieto
+## Objetives
 
-Cada una de estas acciones son las posibles clases del clasificador de imágenes.
+The aim of this project is to realise an image classifier using 2 methods, pretrained MobileNet model and a custom on fly trained model classifier.
 
-## Despliegue
+The pre-trained MobileNet detects the gestures that we indicate using the camera, the detections made will serve as an input device for a video game. In this case, we have selected the classic Super Mario Bros. level 1-1. The available actions are the following:
 
-El proyecto se encuentra desplegado en Firebase. Se puede probar tanto en PC como en móvil a través
-de este enlace: https://mario-tfjs.web.app/
+- Forward
+- Backwards
+- Jump
+
+Each of these actions are the possible classes of the image classifier.
+
+## Deployment
+
+The project is deployed using Firebase. It can be tested both on PC and mobile through this link: https://mario-tfjs.web.app/
