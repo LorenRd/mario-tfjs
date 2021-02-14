@@ -126,6 +126,7 @@ class CamRecorder extends Component {
 
         this.props.setPlaying();
     }
+    
     changeCameraMobile() {
         this.props.changeCamera(this.props.videoConstraints.facingMode);
     }

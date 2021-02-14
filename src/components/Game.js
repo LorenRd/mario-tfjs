@@ -21,7 +21,7 @@ import "./Game.css";
 
 const CANVAS_WIDTH = 760;
 const CANVAS_HEIGHT = 600;
-const FPS = 60;
+const FPS = 50;
 const PREDICT_WAIT_FRAMES = 5;
 
 const styles = () => ({
@@ -34,7 +34,7 @@ const styles = () => ({
         position: "absolute",
         top: 0,
         left: 0
-    }
+    },
 });
 
 class Game extends Component {

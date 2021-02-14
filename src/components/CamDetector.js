@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Webcam from "react-webcam";
-import { Typography, Grid, withStyles } from "@material-ui/core";
+import { Typography, Grid, withStyles, IconButton } from "@material-ui/core";
 import * as tf from "@tensorflow/tfjs";
 import { connect } from "react-redux";
 import setPrediction from "../redux/actions/setPrediction";
@@ -8,6 +8,9 @@ import setPredictionFunction from "../redux/actions/setPredictionFunction";
 import Game from "./Game";
 import "./CamStyles.css";
 import actions from "../gameActions";
+import { MobileView } from "react-device-detect";
+import changeCamera from "../redux/actions/changeCamera";
+import { SwitchCamera } from "@material-ui/icons";
 
 const styles = theme => ({
     predictionText: {
@@ -26,6 +29,16 @@ const styles = theme => ({
     },
     camCenter: {
         textAlign: "center"
+    },
+    changeCamButton: {
+        backgroundColor: "#ffb13d",
+        boxShadow: "10px 3px 5px 2px rgba(0, 0, 0, .5)",
+        '&:hover': {
+            backgroundColor: "#ff9800",
+        },
+        position: "absolute",
+        top: 0,
+        right: 0
     }
 });
 
@@ -40,7 +53,7 @@ class CamDetector extends Component {
     }
 
     componentDidMount() {
-        if(this.props.modelType === "mobilenet") {
+        if (this.props.modelType === "mobilenet") {
             this.props.setPredictionFunction(this.detectMobilenet.bind(this));
         } else {
             this.props.setPredictionFunction(this.detectPretrained.bind(this));
@@ -48,7 +61,7 @@ class CamDetector extends Component {
     }
 
     detectPretrained() {
-        
+
         const { model, setPrediction } = this.props;
 
         if (typeof this.webcamRef.current === "undefined" ||
@@ -96,6 +109,10 @@ class CamDetector extends Component {
         this.setState({ isCamReady: true });
     }
 
+    changeCameraMobile() {
+        this.props.changeCamera(this.props.videoConstraints.facingMode);
+    }
+
     render() {
         const { prediction, predictionProb, classes } = this.props;
         const { isCamReady } = this.state;
@@ -123,6 +140,11 @@ class CamDetector extends Component {
                         </>
                     }
                 </Grid>
+                <MobileView>
+                    <IconButton className={classes.changeCamButton} onClick={() => this.changeCameraMobile()}>
+                        <SwitchCamera />
+                    </IconButton>
+                </MobileView>
             </Grid>
         );
     }
@@ -141,7 +163,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
     setPrediction,
-    setPredictionFunction
+    setPredictionFunction,
+    changeCamera,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(CamDetector));
