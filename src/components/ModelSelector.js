@@ -72,8 +72,9 @@ class ModelSelector extends Component {
 
         loadGraphModel("/model/model.json")
             .then(model => {
+                // This model is already trained
+                this.props.setPlaying(); 
                 this.props.setModel(model);
-                this.props.setPlaying();    // This model is already trained
             })
             .catch(() => {
                 this.props.showAlert("error", "Ha ocurrido un error cargando el modelo pre-entrenado");

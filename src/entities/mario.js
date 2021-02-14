@@ -254,7 +254,7 @@ export default class Mario extends Entity {
         this.direction = 'right';
         this.bigMario = false;
         this.velY = 0;
-        this.velX = 1.0;
+        this.velX = 1.2;
         this.xPos = xPos;
         this.yPos = yPos;
         this.width = width;
