@@ -1,12 +1,12 @@
 // WATCH OUT: order of actions must match the model
 const actions = [
     {
-        name: "Atrás",
-        class: "back"
-    },
-    {
         name: "Adelante",
         class: "forward"
+    },
+    {
+        name: "Atrás",
+        class: "back"
     },
     {
         name: "Salto",
