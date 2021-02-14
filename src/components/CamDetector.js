@@ -58,7 +58,7 @@ class CamDetector extends Component {
         }
 
         const img = tf.browser.fromPixels(this.webcamRef.current.video);
-        const resized = tf.image.resizeBilinear(img, [224, 224]);
+        const resized = tf.image.resizeBilinear(img, [220, 220]);
         const expanded = resized.expandDims(0);
         const result = model.predict(expanded);
 
